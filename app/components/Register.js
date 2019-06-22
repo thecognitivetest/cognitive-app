@@ -4,7 +4,7 @@ import { Button, Text, ThemeProvider } from 'react-native-elements';
 import firebase from 'firebase'
 import '@firebase/firestore';
 
-export default class Signup extends Component {
+export default class Register extends Component {
 
     constructor(props) {
         super(props);
@@ -21,7 +21,7 @@ export default class Signup extends Component {
     static navigationOptions = ({navigation}) => {
         return {
             header: null,
-            title: 'Signup',
+            title: 'Register',
             headerStyle: {
                 backgroundColor: '#fff',
             },
@@ -35,21 +35,26 @@ export default class Signup extends Component {
     };
 
     signUp() {
-        firebase.auth().createUserWithEmailAndPassword(this.state.email, this.state.password).catch(function(error) {
+        // TODO: CHECK FOR REAL EMAIL
+        auth.createUserWithEmailAndPassword(this.state.email, this.state.password).catch(function(error) {
             // Handle Errors here.
             var errorCode = error.code;
             var errorMessage = error.message;
-            // ...
         });
-        db.collection("users").add({
-            name: this.state.name,
-            age: this.state.age,
-            race: this.state.race,
-            gender: this.state.gender,
-            email: this.state.email,
-        })
 
-        this.props.navigation.navigate('Test');
+        auth.onAuthStateChanged(firebaseUser => {
+            if(firebaseUser) {
+                db.collection("users").doc(firebaseUser.uid).set({
+                    name: this.state.name,
+                    age: this.state.age,
+                    race: this.state.race,
+                    gender: this.state.gender,
+                    email: this.state.email,
+                    id: firebaseUser.uid,
+                })
+                this.props.navigation.navigate('Home');
+            }
+        });
     }
 
     render() {
@@ -123,17 +128,8 @@ export default class Signup extends Component {
     }
 }
 
-const firebaseConfig = {
-    apiKey: "AIzaSyBchPIaXkSX2n6We4Dsp5rVkjTB5FKJiQo",
-    authDomain: "cognitive-f72bb.firebaseapp.com",
-    databaseURL: "https://cognitive-f72bb.firebaseio.com",
-    projectId: "cognitive-f72bb",
-    storageBucket: "cognitive-f72bb.appspot.com",
-    messagingSenderId: "940470277749",
-    appId: "1:940470277749:web:43c1f58aab5c16d3"
-};
-// firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
+const auth = firebase.auth();
 
 const styles = StyleSheet.create({
     container: {

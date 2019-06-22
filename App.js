@@ -3,9 +3,13 @@ import { StyleSheet, View } from 'react-native';
 import { Button, Text, ThemeProvider } from 'react-native-elements';
 import { createAppContainer, createStackNavigator } from 'react-navigation';
 import LoginScreen from './app/components/Login';
-import SignupScreen from './app/components/Signup'
+import RegisterScreen from './app/components/Register';
+import HomeScreen from './app/components/Home';
+import CognitiveHomeScreen from './app/components/cognitive/CognitiveHome';
+import firebase from 'firebase'
+import '@firebase/firestore';
 
-class HomeScreen extends React.Component {
+class WelcomeScreen extends React.Component {
 
   constructor(props) {
     super(props);
@@ -13,8 +17,17 @@ class HomeScreen extends React.Component {
 
   static navigationOptions = {
     header: null,
-    title: 'Home'
+    title: 'Welcome'
   };
+
+  start() {
+    var user = firebase.auth().currentUser;
+    if (user) {
+      this.props.navigation.navigate('Home')
+    } else {
+      this.props.navigation.navigate('Login')
+    }
+  }
 
   render() {
     return (
@@ -23,7 +36,7 @@ class HomeScreen extends React.Component {
           <Text style={styles.text}>Welcome</Text>
           <Button 
             title='Start'
-            onPress={() => this.props.navigation.navigate('Login')}
+            onPress={() => this.start()}
           />
         </View>
       </ThemeProvider>
@@ -33,18 +46,24 @@ class HomeScreen extends React.Component {
 
 const RootStack = createStackNavigator(
     {
-        Home: {
-          screen: HomeScreen,
+        Welcome: {
+          screen: WelcomeScreen,
         },
         Login: {
           screen: LoginScreen,
         },
-        Signup: {
-          screen: SignupScreen,
+        Register: {
+          screen: RegisterScreen,
+        },
+        Home: {
+          screen: HomeScreen,
+        },
+        CognitiveHome: {
+          screen: CognitiveHomeScreen,
         },
     },
     {
-        initialRouteName: 'Home',
+        initialRouteName: 'Welcome',
         // defaultNavigationOptions: { header: null }
     }
 );

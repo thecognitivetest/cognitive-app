@@ -21,12 +21,6 @@ export default class Login extends Component {
             headerStyle: {
                 backgroundColor: '#fff',
             },
-            headerRight: (
-            <Button
-                onPress={() => navigation.navigate('Profile')}
-                title="Next"
-            />
-            ),
         }
     };
 
@@ -35,9 +29,14 @@ export default class Login extends Component {
             // Handle Errors here.
             var errorCode = error.code;
             var errorMessage = error.message;
-            // ...
         });
-        this.props.navigation.navigate('Test');
+
+        firebase.auth().onAuthStateChanged(firebaseUser => {
+            if(firebaseUser) {
+                console.log(firebaseUser);
+                this.props.navigation.navigate('Home');
+            }
+        });
     }
 
     render() {
@@ -65,7 +64,7 @@ export default class Login extends Component {
                         title='Log In'
                     />
                     <Button 
-                        onPress={() => this.props.navigation.navigate('Signup')}
+                        onPress={() => this.props.navigation.navigate('Register')}
                         title='Register'
                     />
                 </ScrollView>
@@ -84,7 +83,6 @@ const firebaseConfig = {
     appId: "1:940470277749:web:43c1f58aab5c16d3"
 };
 firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
 
 const styles = StyleSheet.create({
     container: {
