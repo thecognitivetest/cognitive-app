@@ -32,9 +32,9 @@ export default class Register extends Component {
         return re.test((String)(email).toLowerCase());
     }
 
-    signUp() {
+    signUp = async() => {
         if(this.emailIsValid(this.state.email)) {
-            auth.createUserWithEmailAndPassword(this.state.email, this.state.password).catch(function(error) {
+            await auth.createUserWithEmailAndPassword(this.state.email, this.state.password).catch(function(error) {
                 // Handle Errors here.
                 var errorCode = error.code;
                 var errorMessage = error.message;

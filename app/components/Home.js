@@ -13,14 +13,15 @@ export default class Home extends Component {
     static navigationOptions = ({navigation}) => {
         return {
             title: 'Home',
+            gesturesEnabled: false,
             headerStyle: {
                 backgroundColor: '#fff',
             },
         }
     };
 
-    signOut() {
-        firebase.auth().signOut().then(function() {
+    signOut = async() => {
+        await firebase.auth().signOut().then(function() {
             // Sign-out successful.
         }).catch(function(error) {
             // An error happened.

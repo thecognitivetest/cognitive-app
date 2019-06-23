@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Button, Text, ThemeProvider } from 'react-native-elements';
-import { createAppContainer, createStackNavigator } from 'react-navigation';
+import { createAppContainer, createStackNavigator, createSwitchNavigator } from 'react-navigation';
 import LoginScreen from './app/components/Login';
 import RegisterScreen from './app/components/Register';
 import HomeScreen from './app/components/Home';
@@ -43,31 +43,32 @@ class WelcomeScreen extends React.Component {
   }
 }
 
-const RootStack = createStackNavigator(
+// TODO: add loading screen https://reactnavigation.org/docs/en/auth-flow.html
+
+const AppStack = createStackNavigator(
     {
-        Welcome: {
-          screen: WelcomeScreen,
-        },
-        Login: {
-          screen: LoginScreen,
-        },
-        Register: {
-          screen: RegisterScreen,
-        },
-        Home: {
-          screen: HomeScreen,
-        },
-        CognitiveHome: {
-          screen: CognitiveHomeScreen,
-        },
-    },
-    {
-        initialRouteName: 'Welcome',
-        defaultNavigationOptions: { header: null }
+        Welcome: WelcomeScreen,
+        Home: HomeScreen,
+        CognitiveHome: CognitiveHomeScreen,
     }
 );
 
-const AppContainer = createAppContainer(RootStack);
+const AuthStack = createStackNavigator(
+  {
+      Login: LoginScreen,
+      Register: RegisterScreen,
+  }
+);
+
+const AppContainer = createAppContainer(createSwitchNavigator(
+  {
+    App: AppStack,
+    Auth: AuthStack,
+  },
+  {
+    initialRouteName: 'App',
+}
+));
 
 const styles = StyleSheet.create({
   container: {
