@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, ScrollView } from 'react-native';
+import { View, StyleSheet, ScrollView, Alert } from 'react-native';
 import { Button, Text, ThemeProvider } from 'react-native-elements';
+import firebase from 'firebase'
+import '@firebase/firestore';
 
 export default class Home extends Component {
 
@@ -10,13 +12,26 @@ export default class Home extends Component {
 
     static navigationOptions = ({navigation}) => {
         return {
-            header: null,
             title: 'Home',
             headerStyle: {
                 backgroundColor: '#fff',
             },
         }
     };
+
+    signOut() {
+        firebase.auth().signOut().then(function() {
+            // Sign-out successful.
+        }).catch(function(error) {
+            // An error happened.
+            Alert.alert("Having trouble signing out" + error);
+        });
+
+        firebase.auth().onAuthStateChanged(firebaseUser => {
+            this.props.navigation.navigate('Welcome');
+        });
+          
+    }
 
     render() {
         return (
@@ -25,6 +40,10 @@ export default class Home extends Component {
                     <Button 
                         onPress={() => this.props.navigation.navigate('CognitiveHome')}
                         title='Cognitive Test'
+                    />
+                    <Button 
+                        onPress={() => this.signOut()}
+                        title='Sign Out'
                     />
                 </ScrollView>
             </ThemeProvider>

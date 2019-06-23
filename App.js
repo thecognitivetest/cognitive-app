@@ -16,7 +16,6 @@ class WelcomeScreen extends React.Component {
   }
 
   static navigationOptions = {
-    header: null,
     title: 'Welcome'
   };
 
@@ -64,7 +63,7 @@ const RootStack = createStackNavigator(
     },
     {
         initialRouteName: 'Welcome',
-        // defaultNavigationOptions: { header: null }
+        defaultNavigationOptions: { header: null }
     }
 );
 

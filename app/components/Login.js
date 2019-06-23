@@ -16,7 +16,6 @@ export default class Login extends Component {
 
     static navigationOptions = ({navigation}) => {
         return {
-            header: null,
             title: 'Login',
             headerStyle: {
                 backgroundColor: '#fff',
@@ -33,7 +32,6 @@ export default class Login extends Component {
 
         firebase.auth().onAuthStateChanged(firebaseUser => {
             if(firebaseUser) {
-                console.log(firebaseUser);
                 this.props.navigation.navigate('Home');
             }
         });

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, ScrollView, Picker, TextInput } from 'react-native';
+import { View, StyleSheet, ScrollView, Picker, TextInput, Alert } from 'react-native';
 import { Button, Text, ThemeProvider } from 'react-native-elements';
 import firebase from 'firebase'
 import '@firebase/firestore';
@@ -20,27 +20,28 @@ export default class Register extends Component {
 
     static navigationOptions = ({navigation}) => {
         return {
-            header: null,
             title: 'Register',
             headerStyle: {
                 backgroundColor: '#fff',
             },
-            headerRight: (
-            <Button
-                onPress={() => navigation.navigate('Test')}
-                title="Next"
-            />
-            ),
         }
     };
 
+    emailIsValid (email) {
+        var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        return re.test((String)(email).toLowerCase());
+    }
+
     signUp() {
-        // TODO: CHECK FOR REAL EMAIL
-        auth.createUserWithEmailAndPassword(this.state.email, this.state.password).catch(function(error) {
-            // Handle Errors here.
-            var errorCode = error.code;
-            var errorMessage = error.message;
-        });
+        if(this.emailIsValid(this.state.email)) {
+            auth.createUserWithEmailAndPassword(this.state.email, this.state.password).catch(function(error) {
+                // Handle Errors here.
+                var errorCode = error.code;
+                var errorMessage = error.message;
+            });
+        } else {
+            Alert.alert("Invalid Email!");
+        }
 
         auth.onAuthStateChanged(firebaseUser => {
             if(firebaseUser) {

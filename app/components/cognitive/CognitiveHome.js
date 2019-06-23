@@ -12,7 +12,6 @@ export default class CognitiveHome extends Component {
 
     static navigationOptions = ({navigation}) => {
         return {
-            header: null,
             title: 'CognitiveHome',
             headerStyle: {
                 backgroundColor: '#fff',
