@@ -96,7 +96,7 @@ export default class Register extends Component {
                         value={this.state.firstName} 
                         onChangeText={(firstName) => this.setState({firstName})}
                         label='First Name'
-                        textContentType='name'
+                        textContentType='givenName'
                     />
                     <TextField
                         value={this.state.lastName} 

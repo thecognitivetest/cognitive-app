@@ -113,11 +113,4 @@ const styles = StyleSheet.create({
       alignItems: 'center',
       justifyContent: 'space-between',
     },
-    textInput: {
-        width: 100,
-        fontSize: 20,
-    },
-    picker: {
-        width: 120,
-    },
 });

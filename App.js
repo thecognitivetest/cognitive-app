@@ -13,42 +13,56 @@ class WelcomeScreen extends React.Component {
 
   constructor(props) {
     super(props);
+    this.state = {authenticated: false}
   }
 
   static navigationOptions = {
     title: 'Welcome'
   };
 
-  start() {
-    var user = firebase.auth().currentUser;
-    if (user) {
-      this.props.navigation.navigate('Home')
-    } else {
-      this.props.navigation.navigate('Login')
-    }
+  // componentWillMount() {
+  //   var user = firebase.auth().currentUser;
+  //   if (user) {
+  //     this.props.navigation.navigate('Home')
+  //   }
+  // }
+
+  componentWillMount() {
+    firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        this.setState({authenticated: true});
+      } else {
+        this.setState({authenticated: false});
+      }
+    });
   }
 
   render() {
-    return (
-      <ThemeProvider>
-        <View style={{alignItems: 'center', paddingTop: 20}}>
-          <Text style={{fontSize: 20, fontWeight: 'bold'}}>Your health.</Text>
-          <Text style={{fontSize: 20, fontWeight: 'bold', color: 'pink'}}>In your hands.</Text>
-        </View>
-        <View style={styles.container}>
-          <Button 
-            title='Login'
-            onPress={() => this.props.navigation.navigate('Login')}
-            style={{backgroundColor: '#ffc0cb'}}
-          />
-          <Button 
-            title='Signup'
-            onPress={() => this.props.navigation.navigate('Register')}
-          />
-          <Text style={{paddingTop: 20}}>Terms of Service</Text>
-        </View>
-      </ThemeProvider>
-    );
+    if(this.state.authenticated) {
+      return (<HomeScreen/>)
+    }
+    else {
+      return (
+        <ThemeProvider>
+          <View style={{alignItems: 'center', paddingTop: 20}}>
+            <Text style={{fontSize: 20, fontWeight: 'bold'}}>Your health.</Text>
+            <Text style={{fontSize: 20, fontWeight: 'bold', color: 'pink'}}>In your hands.</Text>
+          </View>
+          <View style={styles.container}>
+            <Button 
+              title='Login'
+              onPress={() => this.props.navigation.navigate('Login')}
+              style={{backgroundColor: '#ffc0cb'}}
+            />
+            <Button 
+              title='Signup'
+              onPress={() => this.props.navigation.navigate('Register')}
+            />
+            <Text style={{paddingTop: 20}}>Terms of Service</Text>
+          </View>
+        </ThemeProvider>
+      );
+    }
   }
 }
 
