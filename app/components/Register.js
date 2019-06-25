@@ -121,7 +121,7 @@ export default class Register extends Component {
                     </View>
                     <Button 
                         onPress={() => this.signUp()}
-                        title='Register'
+                        title='Signup'
                     />
                 </ScrollView>
             </ThemeProvider>

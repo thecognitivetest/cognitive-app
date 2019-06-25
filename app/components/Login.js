@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, ScrollView, Picker, TextInput } from 'react-native';
+import { View, StyleSheet, ScrollView } from 'react-native';
 import { Button, Text, ThemeProvider } from 'react-native-elements';
+import { TextField } from 'react-native-material-textfield';
 import firebase from 'firebase'
 import '@firebase/firestore';
 
@@ -9,8 +10,11 @@ export default class Login extends Component {
     constructor(props) {
         super(props);
         this.state = { 
-            email: 'email',
-            password: 'password',
+            email: '',
+            emailError: '',
+            password: '',
+            passwordHidden: true,
+            passwordError: '',
         }
     }
 
@@ -24,10 +28,20 @@ export default class Login extends Component {
     };
 
     logIn = async() => {
-        await firebase.auth().signInWithEmailAndPassword(this.state.email, this.state.password).catch(function(error) {
+        await firebase.auth().signInWithEmailAndPassword(this.state.email, this.state.password).catch((error) => {
             // Handle Errors here.
             var errorCode = error.code;
             var errorMessage = error.message;
+            if(errorCode == 'auth/invalid-email') {
+                this.setState({emailError: 'Invalid Email'});
+            } else if(errorCode == 'auth/wrong-password') {
+                this.setState({passwordError: 'Incorrect Password'});
+            } else {
+                this.setState({
+                    emailError: '',
+                    passwordError: '',
+                });
+            }
         });
 
         firebase.auth().onAuthStateChanged(firebaseUser => {
@@ -37,11 +51,19 @@ export default class Login extends Component {
         });
     }
 
+    togglePassword() {
+        if(this.state.passwordHidden) {
+            this.setState({passwordHidden: false});
+        } else {
+            this.setState({passwordHidden: true});
+        }
+    }
+
     render() {
         return (
             <ThemeProvider>
                 <ScrollView style={{paddingTop: 40, padding: 10}}>
-                    <View style={styles.container}>
+                    {/* <View style={styles.container}>
                         <Text style={{fontSize: 20}}>Email:</Text>
                         <TextInput 
                             style={styles.textInput}
@@ -56,15 +78,31 @@ export default class Login extends Component {
                             value={this.state.password} 
                             onChangeText={(password) => this.setState({password})}
                         />  
-                    </View>
+                    </View> */}
+                    <TextField
+                        value={this.state.email} 
+                        onChangeText={(email) => this.setState({email})}
+                        label='Email'
+                        textContentType='emailAddress'
+                        error={this.state.emailError}
+                    />
+                    <TextField
+                        value={this.state.password} 
+                        secureTextEntry={this.state.passwordHidden}
+                        onChangeText={(password) => this.setState({password})}
+                        label='Password'
+                        textContentType='password'
+                        error={this.state.passwordError}
+                    />
+                    <Button 
+                        onPress={() => this.togglePassword()}
+                        title='Toggle Password'
+                    />
                     <Button 
                         onPress={() => this.logIn()}
-                        title='Log In'
+                        title='Login'
                     />
-                    <Button 
-                        onPress={() => this.props.navigation.navigate('Register')}
-                        title='Register'
-                    />
+                    <Text>Forgot your password?</Text>
                 </ScrollView>
             </ThemeProvider>
         );
