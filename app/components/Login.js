@@ -32,15 +32,17 @@ export default class Login extends Component {
             // Handle Errors here.
             var errorCode = error.code;
             var errorMessage = error.message;
-            if(errorCode == 'auth/invalid-email') {
+
+            if(errorCode == 'auth/invalid-email' || errorCode == 'auth/user-not-found') {
                 this.setState({emailError: 'Invalid Email'});
-            } else if(errorCode == 'auth/wrong-password') {
+            } else {
+                this.setState({emailError: ''})
+            }
+            
+            if(errorCode == 'auth/wrong-password') {
                 this.setState({passwordError: 'Incorrect Password'});
             } else {
-                this.setState({
-                    emailError: '',
-                    passwordError: '',
-                });
+                this.setState({passwordError: ''})
             }
         });
 
@@ -63,22 +65,6 @@ export default class Login extends Component {
         return (
             <ThemeProvider>
                 <ScrollView style={{paddingTop: 40, padding: 10}}>
-                    {/* <View style={styles.container}>
-                        <Text style={{fontSize: 20}}>Email:</Text>
-                        <TextInput 
-                            style={styles.textInput}
-                            value={this.state.email} 
-                            onChangeText={(email) => this.setState({email})}
-                        />  
-                    </View>
-                    <View style={styles.container}>
-                        <Text style={{fontSize: 20}}>Password:</Text>
-                        <TextInput 
-                            style={styles.textInput}
-                            value={this.state.password} 
-                            onChangeText={(password) => this.setState({password})}
-                        />  
-                    </View> */}
                     <TextField
                         value={this.state.email} 
                         onChangeText={(email) => this.setState({email})}

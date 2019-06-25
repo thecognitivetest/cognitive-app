@@ -52,11 +52,8 @@ class WelcomeScreen extends React.Component {
   }
 }
 
-// TODO: add loading screen https://reactnavigation.org/docs/en/auth-flow.html
-
 const AppStack = createStackNavigator(
     {
-        Welcome: WelcomeScreen,
         Home: HomeScreen,
         CognitiveHome: CognitiveHomeScreen,
     }
@@ -64,6 +61,7 @@ const AppStack = createStackNavigator(
 
 const AuthStack = createStackNavigator(
   {
+      Welcome: WelcomeScreen,
       Login: LoginScreen,
       Register: RegisterScreen,
   }
@@ -75,7 +73,7 @@ const AppContainer = createAppContainer(createSwitchNavigator(
     Auth: AuthStack,
   },
   {
-    initialRouteName: 'App',
+    initialRouteName: 'Auth',
 }
 ));
 

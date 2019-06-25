@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, ScrollView, Picker, TextInput, Alert } from 'react-native';
+import { View, StyleSheet, ScrollView, Picker, Alert } from 'react-native';
 import { Button, Text, ThemeProvider } from 'react-native-elements';
+import { TextField } from 'react-native-material-textfield';
 import firebase from 'firebase'
 import '@firebase/firestore';
 
@@ -9,12 +10,16 @@ export default class Register extends Component {
     constructor(props) {
         super(props);
         this.state = { 
-            name: 'Benjamin Franklin',
-            age: '65',
-            gender: 'Male',
-            race: 'White',
-            email: 'email',
-            password: 'password',
+            firstName: '',
+            lastName: '',
+            age: '',
+            gender: 'male',
+            race: 'white',
+            email: '',
+            emailError: '',
+            password: '',
+            passwordHidden: true,
+            passwordError: '',
         }
     }
 
@@ -27,26 +32,36 @@ export default class Register extends Component {
         }
     };
 
-    emailIsValid (email) {
-        var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        return re.test((String)(email).toLowerCase());
-    }
-
     signUp = async() => {
-        if(this.emailIsValid(this.state.email)) {
-            await auth.createUserWithEmailAndPassword(this.state.email, this.state.password).catch(function(error) {
+        if(this.state.firstName.length > 0 && this.state.lastName.length > 0 && this.state.age.length > 0) {
+            await auth.createUserWithEmailAndPassword(this.state.email, this.state.password).catch((error) => {
                 // Handle Errors here.
                 var errorCode = error.code;
                 var errorMessage = error.message;
+
+                if(errorCode == 'auth/invalid-email') {
+                    this.setState({emailError: 'Invalid Email'});
+                } else if(errorCode == 'auth/email-already-in-use') {
+                    this.setState({emailError: 'Email is already in use'});
+                } else {
+                    this.setState({emailError: ''});
+                }
+
+                if(errorCode == 'auth/weak-password') {
+                    this.setState({passwordError: 'Password must be at least 6 characters'});
+                } else {
+                    this.setState({passwordError: ''});                
+                }
             });
         } else {
-            Alert.alert("Invalid Email!");
+            Alert.alert('Please fill out all fields!')
         }
 
         auth.onAuthStateChanged(firebaseUser => {
             if(firebaseUser) {
                 db.collection("users").doc(firebaseUser.uid).set({
-                    name: this.state.name,
+                    firstName: this.state.firstName,
+                    lastName: this.state.lastName,
                     age: this.state.age,
                     race: this.state.race,
                     gender: this.state.gender,
@@ -61,42 +76,42 @@ export default class Register extends Component {
     render() {
         return (
             <ThemeProvider>
-                <ScrollView style={{paddingTop: 40, padding: 10}}>
+                <ScrollView style={{padding: 10}}>
+                    <TextField
+                        value={this.state.email} 
+                        onChangeText={(email) => this.setState({email})}
+                        label='Email'
+                        textContentType='emailAddress'
+                        error={this.state.emailError}
+                    />
+                    <TextField
+                        value={this.state.password} 
+                        secureTextEntry={this.state.passwordHidden}
+                        onChangeText={(password) => this.setState({password})}
+                        label='Password'
+                        textContentType='newPassword'
+                        error={this.state.passwordError}
+                    />
+                    <TextField
+                        value={this.state.firstName} 
+                        onChangeText={(firstName) => this.setState({firstName})}
+                        label='First Name'
+                        textContentType='name'
+                    />
+                    <TextField
+                        value={this.state.lastName} 
+                        onChangeText={(lastName) => this.setState({lastName})}
+                        label='Last Name'
+                        textContentType='familyName'
+                    />
+                    <TextField
+                        value={this.state.age} 
+                        onChangeText={(age) => this.setState({age})}
+                        label='Age'
+                        keyboardType='numeric'
+                    />
                     <View style={styles.container}>
-                        <Text style={{fontSize: 20}}>Email:</Text>
-                        <TextInput 
-                            style={styles.textInput}
-                            value={this.state.email} 
-                            onChangeText={(email) => this.setState({email})}
-                        />  
-                    </View>
-                    <View style={styles.container}>
-                        <Text style={{fontSize: 20}}>Password:</Text>
-                        <TextInput 
-                            style={styles.textInput}
-                            value={this.state.password} 
-                            onChangeText={(password) => this.setState({password})}
-                        />  
-                    </View>
-                    <View style={styles.container}>
-                        <Text style={{fontSize: 20}}>What is your name?</Text>
-                        <TextInput 
-                            style={styles.textInput}
-                            value={this.state.name} 
-                            onChangeText={(name) => this.setState({name})}
-                        />  
-                    </View>
-                    <View style={styles.container}>
-                        <Text style={{fontSize: 20}}>What is your age?</Text>
-                        <TextInput 
-                            style={styles.textInput}
-                            value={this.state.age} 
-                            onChangeText={(age) => this.setState({age})}
-                            keyboardType={'number-pad'}
-                        />  
-                    </View>
-                    <View style={styles.container}>
-                    <Text style={{fontSize: 20}}>What is your gender?</Text>
+                        <Text style={{fontSize: 20}}>What is your gender?</Text>
                         <Picker
                             style={styles.picker}
                             selectedValue={this.state.gender}
@@ -104,11 +119,11 @@ export default class Register extends Component {
                             onValueChange={(newValue) => this.setState({gender: newValue})}>
                             <Picker.Item label="Male" value="male" />
                             <Picker.Item label="Female" value="female" />
-                            <Picker.Item label="Non Binary" value="none" />
+                            <Picker.Item label="Non Binary" value={null} />
                         </Picker>
                     </View>
                     <View style={styles.container}>
-                    <Text style={{fontSize: 20}}>What is your race?</Text>
+                        <Text style={{fontSize: 20}}>What is your race?</Text>
                         <Picker
                             style={styles.picker}
                             selectedValue={this.state.race}
@@ -117,6 +132,7 @@ export default class Register extends Component {
                             <Picker.Item label="White" value="white" />
                             <Picker.Item label="Black" value="black" />
                             <Picker.Item label="Asian" value="asian" />
+                            <Picker.Item label="Prefer not to Say" value={null} />
                         </Picker>
                     </View>
                     <Button 
