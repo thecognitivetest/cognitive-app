@@ -2,10 +2,10 @@ import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Button, Text, ThemeProvider } from 'react-native-elements';
 import { createAppContainer, createStackNavigator, createSwitchNavigator } from 'react-navigation';
-import LoginScreen from './app/components/Login';
-import RegisterScreen from './app/components/Register';
-import HomeScreen from './app/components/Home';
-import CognitiveHomeScreen from './app/components/cognitive/CognitiveHome';
+import LoginScreen from './app/screens/Login';
+import RegisterScreen from './app/screens/Register';
+import HomeScreen from './app/screens/Home';
+import CognitiveHomeScreen from './app/screens/cognitive/CognitiveHome';
 import firebase from 'firebase'
 import '@firebase/firestore';
 
@@ -19,13 +19,6 @@ class WelcomeScreen extends React.Component {
   static navigationOptions = {
     title: 'Welcome'
   };
-
-  // componentWillMount() {
-  //   var user = firebase.auth().currentUser;
-  //   if (user) {
-  //     this.props.navigation.navigate('Home')
-  //   }
-  // }
 
   componentWillMount() {
     firebase.auth().onAuthStateChanged((user) => {
@@ -52,13 +45,17 @@ class WelcomeScreen extends React.Component {
             <Button 
               title='Login'
               onPress={() => this.props.navigation.navigate('Login')}
-              style={{backgroundColor: '#ffc0cb'}}
+              buttonStyle={{backgroundColor: '#ffc0cb'}}
             />
             <Button 
               title='Signup'
               onPress={() => this.props.navigation.navigate('Register')}
+              buttonStyle={{backgroundColor: '#dddddd'}}
             />
-            <Text style={{paddingTop: 20}}>Terms of Service</Text>
+            <Button 
+              title='Terms of Service'
+              type='clear'
+            />
           </View>
         </ThemeProvider>
       );

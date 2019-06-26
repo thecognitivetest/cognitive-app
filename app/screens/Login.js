@@ -88,7 +88,10 @@ export default class Login extends Component {
                         onPress={() => this.logIn()}
                         title='Login'
                     />
-                    <Text>Forgot your password?</Text>
+                    <Button 
+                        title='Forgot your password?'
+                        type='clear'
+                    />
                 </ScrollView>
             </ThemeProvider>
         );

@@ -76,7 +76,7 @@ export default class Register extends Component {
     render() {
         return (
             <ThemeProvider>
-                <ScrollView style={{padding: 10}}>
+                <ScrollView style={{paddingTop: 40, padding: 10}}>
                     <TextField
                         value={this.state.email} 
                         onChangeText={(email) => this.setState({email})}
