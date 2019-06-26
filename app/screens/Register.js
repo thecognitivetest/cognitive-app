@@ -20,6 +20,8 @@ export default class Register extends Component {
             password: '',
             passwordHidden: true,
             passwordError: '',
+            passwordConfirm: '',
+            passwordConfirmError: '',
         }
     }
 
@@ -33,7 +35,7 @@ export default class Register extends Component {
     };
 
     signUp = async() => {
-        if(this.state.firstName.length > 0 && this.state.lastName.length > 0 && this.state.age.length > 0) {
+        if(this.state.firstName.length > 0 && this.state.lastName.length > 0 && this.state.age.length > 0 && this.state.password == this.state.passwordConfirm) {
             await auth.createUserWithEmailAndPassword(this.state.email, this.state.password).catch((error) => {
                 // Handle Errors here.
                 var errorCode = error.code;
@@ -53,6 +55,8 @@ export default class Register extends Component {
                     this.setState({passwordError: ''});                
                 }
             });
+        } else if(this.state.password != this.state.passwordConfirm) {
+            this.setState({passwordConfirmError: 'Passwords must match'});
         } else {
             Alert.alert('Please fill out all fields!')
         }
@@ -91,6 +95,14 @@ export default class Register extends Component {
                         label='Password'
                         textContentType='newPassword'
                         error={this.state.passwordError}
+                    />
+                    <TextField
+                        value={this.state.passwordConfirm} 
+                        secureTextEntry={this.state.passwordHidden}
+                        onChangeText={(passwordConfirm) => this.setState({passwordConfirm})}
+                        label='Confirm Password'
+                        textContentType='newPassword'
+                        error={this.state.passwordConfirmError}
                     />
                     <TextField
                         value={this.state.firstName} 
