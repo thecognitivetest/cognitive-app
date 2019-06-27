@@ -2,8 +2,7 @@ import React, { Component } from 'react';
 import { View, StyleSheet, ScrollView } from 'react-native';
 import { Button, Text, ThemeProvider } from 'react-native-elements';
 import { TextField } from 'react-native-material-textfield';
-import firebase from 'firebase'
-import '@firebase/firestore';
+import firebase from 'firebase';
 
 export default class Login extends Component {
 
@@ -18,20 +17,15 @@ export default class Login extends Component {
         }
     }
 
-    static navigationOptions = ({navigation}) => {
-        return {
-            title: 'Login',
-            headerStyle: {
-                backgroundColor: '#fff',
-            },
-        }
+    static navigationOptions = {
+        title: 'Login'
     };
 
-    logIn = async() => {
-        await firebase.auth().signInWithEmailAndPassword(this.state.email, this.state.password).catch((error) => {
-            // Handle Errors here.
+    logIn = () => {
+        firebase.auth().signInWithEmailAndPassword(this.state.email, this.state.password)
+        .then(() => this.props.navigation.navigate('Home'))
+        .catch((error) => {
             var errorCode = error.code;
-            var errorMessage = error.message;
 
             if(errorCode == 'auth/invalid-email' || errorCode == 'auth/user-not-found') {
                 this.setState({emailError: 'Invalid Email'});
@@ -43,12 +37,6 @@ export default class Login extends Component {
                 this.setState({passwordError: 'Incorrect Password'});
             } else {
                 this.setState({passwordError: ''})
-            }
-        });
-
-        firebase.auth().onAuthStateChanged(firebaseUser => {
-            if(firebaseUser) {
-                this.props.navigation.navigate('Home');
             }
         });
     }
@@ -90,6 +78,7 @@ export default class Login extends Component {
                     />
                     <Button 
                         title='Forgot your password?'
+                        // make a modal appear with the process
                         type='clear'
                     />
                 </ScrollView>

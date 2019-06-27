@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import { View, StyleSheet, ScrollView, Alert } from 'react-native';
 import { Button, Text, ThemeProvider } from 'react-native-elements';
-import firebase from 'firebase'
-import '@firebase/firestore';
+import firebase from 'firebase';
 
 export default class Home extends Component {
 
@@ -10,28 +9,17 @@ export default class Home extends Component {
         super(props);
     }
 
-    static navigationOptions = ({navigation}) => {
-        return {
-            title: 'Home',
-            gesturesEnabled: false,
-            headerStyle: {
-                backgroundColor: '#fff',
-            },
-        }
+    static navigationOptions = {
+        title: 'Home',
+        gesturesEnabled: false,
     };
 
-    signOut = async() => {
-        await firebase.auth().signOut().then(function() {
-            // Sign-out successful.
-        }).catch(function(error) {
-            // An error happened.
-            Alert.alert("Having trouble signing out" + error);
-        });
-
-        firebase.auth().onAuthStateChanged(firebaseUser => {
-            this.props.navigation.navigate('Welcome');
-        });
-          
+    signOut = () => {
+        firebase.auth().signOut()
+        .then(() => this.props.navigation.navigate('Welcome'))
+        .catch(function(error) {
+            Alert.alert("Having trouble signing out: " + error);
+        });      
     }
 
     render() {

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { View, StyleSheet, ScrollView } from 'react-native';
 import { Button, Text, ThemeProvider } from 'react-native-elements';
-import firebase from 'firebase'
+import firebase from 'firebase';
 import '@firebase/firestore';
 
 export default class CognitiveHome extends Component {

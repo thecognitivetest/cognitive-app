@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { View, StyleSheet, ScrollView, Picker, Alert } from 'react-native';
 import { Button, Text, ThemeProvider } from 'react-native-elements';
 import { TextField } from 'react-native-material-textfield';
-import firebase from 'firebase'
+import firebase from 'firebase';
 import '@firebase/firestore';
 
 export default class Register extends Component {
@@ -13,8 +13,8 @@ export default class Register extends Component {
             firstName: '',
             lastName: '',
             age: '',
-            gender: 'male',
-            race: 'white',
+            gender: 'Select',
+            race: 'Select',
             email: '',
             emailError: '',
             password: '',
@@ -25,21 +25,16 @@ export default class Register extends Component {
         }
     }
 
-    static navigationOptions = ({navigation}) => {
-        return {
-            title: 'Register',
-            headerStyle: {
-                backgroundColor: '#fff',
-            },
-        }
+    static navigationOptions = {
+        title: 'Register'
     };
 
-    signUp = async() => {
-        if(this.state.firstName.length > 0 && this.state.lastName.length > 0 && this.state.age.length > 0 && this.state.password == this.state.passwordConfirm) {
-            await auth.createUserWithEmailAndPassword(this.state.email, this.state.password).catch((error) => {
-                // Handle Errors here.
+    signUp = () => {
+        if(this.state.firstName.length > 0 && this.state.lastName.length > 0 && this.state.age.length > 0 && this.state.password == this.state.passwordConfirm && this.state.gender != 'Select' && this.state.race != 'Select') {
+            auth.createUserWithEmailAndPassword(this.state.email, this.state.password)
+            .then(() => this.props.navigation.navigate('Home'))
+            .catch((error) => {
                 var errorCode = error.code;
-                var errorMessage = error.message;
 
                 if(errorCode == 'auth/invalid-email') {
                     this.setState({emailError: 'Invalid Email'});
@@ -61,18 +56,17 @@ export default class Register extends Component {
             Alert.alert('Please fill out all fields!')
         }
 
-        auth.onAuthStateChanged(firebaseUser => {
-            if(firebaseUser) {
-                db.collection("users").doc(firebaseUser.uid).set({
+        auth.onAuthStateChanged(user => {
+            if(user) {
+                db.collection("users").doc(user.uid).set({
                     firstName: this.state.firstName,
                     lastName: this.state.lastName,
                     age: this.state.age,
                     race: this.state.race,
                     gender: this.state.gender,
                     email: this.state.email,
-                    id: firebaseUser.uid,
+                    id: user.uid,
                 })
-                this.props.navigation.navigate('Home');
             }
         });
     }
