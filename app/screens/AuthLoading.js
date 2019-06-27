@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View } from 'react-native';
+import { View, StyleSheet, ActivityIndicator, StatusBar } from 'react-native';
 import firebase from 'firebase';
 
 export default class CognitiveHome extends Component {
@@ -20,9 +20,18 @@ export default class CognitiveHome extends Component {
 
     render() {
         return (
-            <View>
-
+            <View style={styles.container}>
+                <ActivityIndicator/>
+                <StatusBar barStyle="default" />
             </View>
         );
     }
 }
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+});
